@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/openblockchain/obc-peer/openchain/chaincode/shim"
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 const   BANKA = "BANKA"
@@ -81,7 +81,7 @@ type NVAccounts struct {
 // ============================================================================================================================
 // Init 
 // ============================================================================================================================
-func (t *SimpleChaincode) init(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 
 	var err error
 
@@ -166,12 +166,12 @@ func (t *SimpleChaincode) init(stub *shim.ChaincodeStub, args []string) ([]byte,
 // ============================================================================================================================
 // Run - Our entry point
 // ============================================================================================================================
-func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Println("run is running " + function)
 
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state
-		return t.init(stub, args)
+		return t.Init(stub, function, args)
 	} else if function == "submitTx" {											//create a transaction
 		return t.submitTx(stub, args)
 	} 
