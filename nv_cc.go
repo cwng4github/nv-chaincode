@@ -186,18 +186,18 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("Query is running " + function);
 	
-	if len(args) != 2 { return nil, errors.New("Incorrect number of arguments passed") }
+	//if len(args) != 2 { return nil, errors.New("Incorrect number of arguments passed") }
 	
-	if args[0] != "getFIDetails" && args[0] != "getTxs" && args[0] != "getNVAccounts"{
-		return nil, errors.New("Invalid query function name.")
-	}	
+	//if args[0] != "getFIDetails" && args[0] != "getTxs" && args[0] != "getNVAccounts"{
+	//	return nil, errors.New("Invalid query function name.")
+	//}	
 
 	// Handle different functions
-	if args[0] == "getFIDetails" {												
+	if function == "getFIDetails" {												
 		return t.getFinInstDetails(stub, args[1])
-	} else if args[0] == "getTxs" {											
+	} else if function == "getNVAccounts" {											
 		return t.getNVAccounts(stub, args[1])
-	} else if args[0] == "getTxs" {											
+	} else if function == "getTxs" {											
 	return t.getTxs(stub, args[1])
 	} 	
 	fmt.Println("Query did not find func: " + function)						//error
