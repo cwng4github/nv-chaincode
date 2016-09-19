@@ -81,7 +81,7 @@ type NVAccounts struct {
 // ============================================================================================================================
 // Init 
 // ============================================================================================================================
-func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 	var err error
 
@@ -166,12 +166,12 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 // ============================================================================================================================
 // Run - Our entry point
 // ============================================================================================================================
-func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-	fmt.Println("run is running " + function)
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+	fmt.Println("Invoke is running " + function)
 
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state
-		return t.Init(stub, function, args)
+		return t.Init(stub, args)
 	} else if function == "submitTx" {											//create a transaction
 		return t.submitTx(stub, args)
 	} 
@@ -183,19 +183,26 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 // ============================================================================================================================
 // Query - read a variable from chaincode state - (aka read)
 // ============================================================================================================================
-func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+	fmt.Println("Query is running " + function);
+	
 	if len(args) != 2 { return nil, errors.New("Incorrect number of arguments passed") }
-
+	
 	if args[0] != "getFIDetails" && args[0] != "getTxs" && args[0] != "getNVAccounts"{
 		return nil, errors.New("Invalid query function name.")
-	}
+	}	
 
-	if args[0] == "getFIDetails" { return t.getFinInstDetails(stub, args[1]) }
-	if args[0] == "getNVAccounts" { return t.getNVAccounts(stub, args[1]) }
-	if args[0] == "getTxs" { return t.getTxs(stub, args[1]) }
+	// Handle different functions
+	if args[0] == "getFIDetails" {												
+		return t.getFinInstDetails(stub, args[1])
+	} else if args[0] == "getTxs" {											
+		return t.getNVAccounts(stub, args[1])
+	} else if args[0] == "getTxs" {											
+	return t.getTxs(stub, args[1])
+	} 	
+	fmt.Println("Query did not find func: " + function)						//error
 
-	return nil, nil										
+	return nil, errors.New("Received unknown function invocation")	
 }
 
 
