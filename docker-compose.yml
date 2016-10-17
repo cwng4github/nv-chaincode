@@ -21,4 +21,86 @@ vp0:
     - CORE_PEER_PKI_TLSCA_PADDR=172.17.0.2:7054    
   links:
     - membersrvc
-  command: sh -c "sleep 5; peer node start --peer-chaincodedev"
+  expose:
+    - "7050"
+    - "7051"
+    - "7053"
+  command: sh -c "sleep 5; peer node start --peer-chaincodedev --logging-level=debug"
+vp1:
+  image: hyperledger/fabric-peer
+  ports:
+    - "17050:7050"
+    - "17051:7051"
+    - "17053:7053"  
+  environment:
+    - CORE_PEER_ADDRESSAUTODETECT=true
+    - CORE_VM_ENDPOINT=http://172.17.0.1:2375
+    - CORE_PEER_DISCOVERY_ROOTNODE=vp0:7051    
+    - CORE_LOGGING_LEVEL=DEBUG
+    - CORE_PEER_ID=vp1
+    - CORE_SECURITY_ENROLLID=test_vp1
+    - CORE_SECURITY_ENROLLSECRET=MwYpmSRjupbT
+    - CORE_PEER_PKI_ECA_PADDR=172.17.0.2:7054
+    - CORE_PEER_PKI_TCA_PADDR=172.17.0.2:7054
+    - CORE_PEER_PKI_TLSCA_PADDR=172.17.0.2:7054    
+  links:
+    - membersrvc
+  expose:
+    - "17050"
+    - "17051"
+    - "17053"
+  command: sh -c "sleep 5; peer node start --peer-chaincodedev --logging-level=debug"
+  links:
+    - vp0
+vp2:
+  image: hyperledger/fabric-peer
+  ports:
+    - "27050:7050"
+    - "27051:7051"
+    - "27053:7053"  
+  environment:
+    - CORE_PEER_ADDRESSAUTODETECT=true
+    - CORE_VM_ENDPOINT=http://172.17.0.1:2375
+    - CORE_PEER_DISCOVERY_ROOTNODE=vp0:7051    
+    - CORE_LOGGING_LEVEL=DEBUG
+    - CORE_PEER_ID=vp2
+    - CORE_SECURITY_ENROLLID=test_vp2
+    - CORE_SECURITY_ENROLLSECRET=MwYpmSRjupb2
+    - CORE_PEER_PKI_ECA_PADDR=172.17.0.2:7054
+    - CORE_PEER_PKI_TCA_PADDR=172.17.0.2:7054
+    - CORE_PEER_PKI_TLSCA_PADDR=172.17.0.2:7054    
+  links:
+    - membersrvc
+  expose:
+    - "27050"
+    - "27051"
+    - "27053"
+  command: sh -c "sleep 5; peer node start --peer-chaincodedev --logging-level=debug"
+  links:
+    - vp0
+vp3:
+  image: hyperledger/fabric-peer
+  ports:
+    - "37050:7050"
+    - "37051:7051"
+    - "37053:7053"  
+  environment:
+    - CORE_PEER_ADDRESSAUTODETECT=true
+    - CORE_VM_ENDPOINT=http://172.17.0.1:2375
+    - CORE_PEER_DISCOVERY_ROOTNODE=vp0:7051    
+    - CORE_LOGGING_LEVEL=DEBUG
+    - CORE_PEER_ID=vp3
+    - CORE_SECURITY_ENROLLID=test_vp3
+    - CORE_SECURITY_ENROLLSECRET=MwYpmSRjupb3
+    - CORE_PEER_PKI_ECA_PADDR=172.17.0.2:7054
+    - CORE_PEER_PKI_TCA_PADDR=172.17.0.2:7054
+    - CORE_PEER_PKI_TLSCA_PADDR=172.17.0.2:7054    
+  links:
+    - membersrvc
+  expose:
+    - "37050"
+    - "37051"
+    - "37053"
+  command: sh -c "sleep 5; peer node start --peer-chaincodedev --logging-level=debug"
+  links:
+    - vp0    
