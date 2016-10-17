@@ -1,21 +1,21 @@
-# Start from a Debian image with the latest version of Go installed
-# and a workspace (GOPATH) configured at /go.
-FROM golang
+FROM    node:5
 
-RUN mkdir -p /go/src/github.com/hyperledger
-RUN cd /go/src/github.com/hyperledger
-WORKDIR /go/src/github.com/hyperledger
-RUN git clone https://github.com/hyperledger-archives/fabric.git
+WORKDIR /
+RUN apt-get update
+RUN apt-get install haproxy -y
+COPY haproxy.cfg /etc/haproxy/haproxy.cfg
 
-# Copy the local package files to the container's workspace.
-ADD . /go/src/github.com/cwng4github/nv-chaincode
-RUN cd /go/src/github.com/cwng4github/nv-chaincode
-WORKDIR /go/src/github.com/cwng4github/nv-chaincode
+RUN mkdir -p /opt/certs
+COPY us.blockchain.ibm.com.cert /opt/certs/blockchain.ibm.com.pem
 
-RUN go build
-RUN chmod +x nv-chaincode
+RUN mkdir -p /cp-demo
+COPY . /cp-demo/
+RUN cd /cp-demo ; npm install --production
+WORKDIR /cp-demo
+COPY ibm-blockchain-js_index.js /cp-demo/node_modules/ibm-blockchain-js/index.js
 
-CMD CORE_CHAINCODE_ID_NAME=mycc CORE_PEER_ADDRESS=172.17.0.3:7051 /go/src/github.com/cwng4github/nv-chaincode/nv-chaincode
+RUN chmod +x start.sh
 
-# Document that the service listens on port 8080.
-#EXPOSE 8080
+EXPOSE 3000
+CMD ["/cp-demo/start.sh"]
+
